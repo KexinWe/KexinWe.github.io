@@ -1,25 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>地图展示</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <style>
+        body,
+        html,
+        #container {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            font-family: "微软雅黑";
+        }
 
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.1800
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "计网作业", "计网作业\计网作业.csproj", "{EBAB7945-8CAA-4486-B3BE-0E3D67257F87}"
-EndProject
-Global
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{EBAB7945-8CAA-4486-B3BE-0E3D67257F87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EBAB7945-8CAA-4486-B3BE-0E3D67257F87}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EBAB7945-8CAA-4486-B3BE-0E3D67257F87}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EBAB7945-8CAA-4486-B3BE-0E3D67257F87}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {F2DF119F-307B-4884-8AF1-9457835517E5}
-	EndGlobalSection
-EndGlobal
+        .info {
+            z-index: 999;
+            width: auto;
+            min-width: 22rem;
+            padding: .75rem 1.25rem;
+            margin-left: 1.25rem;
+            position: fixed;
+            top: 1rem;
+            background-color: #fff;
+            border-radius: .25rem;
+            font-size: 14px;
+            color: #666;
+            box-shadow: 0 2px 6px 0 rgba(27, 142, 236, 0.5);
+        }
+    </style>
+    <script src="//api.map.baidu.com/api?type=webgl&v=1.0&ak=fQN8aOWEiE8NswY38zk91LwcgUDtoh07"></script>
+</head>
+<body>
+    <div class="info">我的家乡：湖北省随州市</div>
+    <div id="container"></div>
+</body>
+</html>
+<script>
+    var map = new BMapGL.Map('container'); // 创建Map实例
+    map.centerAndZoom(new BMapGL.Point(113.374, 31.717), 12); // 初始化地图,设置中心点坐标和地图级别
+    map.enableScrollWheelZoom(true); // 开启鼠标滚轮缩放
+    // 创建添加点标记
+    var marker = new BMapGL.Marker(new BMapGL.Point(113.374, 31.717));
+    map.addOverlay(marker);
+    // 创建图文信息窗口
+    var sContent = `<h4 style='margin:0 0 5px 0;'>随州市</h4>
+    <img style='float:right;margin:0 4px 22px' id='imgDemo' src='../img/编钟.jpg' width='139' height='104'/>
+    <p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>
+    随州位于湖北省北部，闻名于世的编钟出土于此，也是华夏始祖炎帝神农的诞生地；随州地处长江流域和淮河流域的交汇地带，东承武汉，西接襄阳，北临南阳、信阳，南达荆州，居“荆豫要冲”，扼“汉襄咽喉”，为”鄂北重镇”，是湖北省对外开放的”北大门”。
+    </p></div>`;
+    var infoWindow = new BMapGL.InfoWindow(sContent);
+    // marker添加点击事件
+    marker.addEventListener('click', function () {
+        this.openInfoWindow(infoWindow);
+        // 图片加载完毕重绘infoWindow
+        document.getElementById('imgDemo').onload = function () {
+            infoWindow.redraw(); // 防止在网速较慢时生成的信息框高度比图片总高度小，导致图片部分被隐藏
+        };
+    });
+</script>
